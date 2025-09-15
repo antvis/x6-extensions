@@ -63,6 +63,7 @@
     "implicit-arrow-linebreak": 0,
     "lines-between-class-members": 0,
     "@typescript-eslint/lines-between-class-members": 0,
+    "import/no-relative-packages": 0,
     "consistent-return": 0,
     "no-return-assign": [2, "except-parens"],
     "no-param-reassign": [

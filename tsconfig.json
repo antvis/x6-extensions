@@ -1,5 +1,5 @@
 {
-  "exclude": ["node_modules", "**/es", "**/lib"],
+  "exclude": ["node_modules", "lib", "es", "demo", "vite.config.ts"],
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "node",
