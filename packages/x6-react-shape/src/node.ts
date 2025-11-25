@@ -1,8 +1,6 @@
-import { ObjectExt, Markup, Node } from '@antv/x6'
+import { ObjectExt, Node, Dom } from '@antv/x6'
 
-export class ReactShape<
-  Properties extends ReactShape.Properties = ReactShape.Properties,
-> extends Node<Properties> {}
+export class ReactShape extends Node {}
 
 export namespace ReactShape {
   export type Primer =
@@ -13,15 +11,61 @@ export namespace ReactShape {
     | 'polygon'
     | 'polyline'
 
-  export interface Properties extends Node.Properties {
+  export type StyleMap = Record<string, string | number>
+
+  export interface MarkupNode {
+    tagName: string
+    selector?: string
+    ns?: string
+    attrs?: Record<string, string | number | null>
+    style?: StyleMap
+    children?: MarkupNode[]
+  }
+
+  export type Attributes = Record<
+    string,
+    Record<string, string | number | null>
+  >
+
+  export interface Properties {
     primer?: Primer
+    markup?: MarkupNode[]
+    attrs?: Attributes
   }
 }
 
 export namespace ReactShape {
-  function getMarkup(primer?: Primer) {
-    const markup: Markup.JSONMarkup[] = []
-    const content = Markup.getForeignObjectMarkup()
+  function getMarkup(primer?: Primer): MarkupNode[] {
+    const content: MarkupNode = {
+      tagName: 'foreignObject',
+      selector: 'fo',
+      children: [
+        {
+          tagName: 'body',
+          selector: 'foBody',
+          ns: Dom.ns.xhtml,
+          attrs: {
+            xmlns: Dom.ns.xhtml,
+          },
+          style: {
+            width: '100%',
+            height: '100%',
+            background: 'transparent',
+          },
+          children: [
+            {
+              tagName: 'div',
+              selector: 'foContent',
+              style: {
+                width: '100%',
+                height: '100%',
+              },
+            },
+          ],
+        },
+      ],
+    }
+    const markup: MarkupNode[] = []
 
     if (primer) {
       markup.push(
@@ -40,7 +84,7 @@ export namespace ReactShape {
     return markup
   }
 
-  ReactShape.config<Properties>({
+  ReactShape.config({
     view: 'react-shape-view',
     markup: getMarkup(),
     attrs: {
@@ -53,6 +97,8 @@ export namespace ReactShape {
       fo: {
         refWidth: '100%',
         refHeight: '100%',
+        width: '100%',
+        height: '100%',
       },
     },
     propHooks(metadata: Properties) {
@@ -61,17 +107,17 @@ export namespace ReactShape {
         if (primer) {
           metadata.markup = getMarkup(primer)
 
-          let attrs = {}
+          let shapeAttrs: Record<string, string> = {}
           switch (primer) {
             case 'circle':
-              attrs = {
+              shapeAttrs = {
                 refCx: '50%',
                 refCy: '50%',
                 refR: '50%',
               }
               break
             case 'ellipse':
-              attrs = {
+              shapeAttrs = {
                 refCx: '50%',
                 refCy: '50%',
                 refRx: '50%',
@@ -87,11 +133,11 @@ export namespace ReactShape {
               body: {
                 refWidth: null,
                 refHeight: null,
-                ...attrs,
+                ...shapeAttrs,
               },
             },
             metadata.attrs || {},
-          )
+          ) as Attributes
         }
       }
       return metadata

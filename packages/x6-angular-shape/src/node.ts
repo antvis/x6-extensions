@@ -1,8 +1,6 @@
-import { Node, Markup, ObjectExt } from '@antv/x6'
+import { Node, ObjectExt, Dom } from '@antv/x6'
 
-export class AngularShape<
-  Properties extends AngularShape.Properties = AngularShape.Properties,
-> extends Node<Properties> {}
+export class AngularShape extends Node {}
 
 export namespace AngularShape {
   export type Primer =
@@ -13,15 +11,61 @@ export namespace AngularShape {
     | 'polygon'
     | 'polyline'
 
-  export interface Properties extends Node.Properties {
+  export type StyleMap = Record<string, string | number>
+
+  export interface MarkupNode {
+    tagName: string
+    selector?: string
+    ns?: string
+    attrs?: Record<string, string | number | null>
+    style?: StyleMap
+    children?: MarkupNode[]
+  }
+
+  export type Attributes = Record<
+    string,
+    Record<string, string | number | null>
+  >
+
+  export interface Properties {
     primer?: Primer
+    markup?: MarkupNode[]
+    attrs?: Attributes
   }
 }
 
 export namespace AngularShape {
-  function getMarkup(primer?: Primer) {
-    const markup: Markup.JSONMarkup[] = []
-    const content = Markup.getForeignObjectMarkup()
+  function getMarkup(primer?: Primer): MarkupNode[] {
+    const content: MarkupNode = {
+      tagName: 'foreignObject',
+      selector: 'fo',
+      children: [
+        {
+          tagName: 'body',
+          selector: 'foBody',
+          ns: Dom.ns.xhtml,
+          attrs: {
+            xmlns: Dom.ns.xhtml,
+          },
+          style: {
+            width: '100%',
+            height: '100%',
+            background: 'transparent',
+          },
+          children: [
+            {
+              tagName: 'div',
+              selector: 'foContent',
+              style: {
+                width: '100%',
+                height: '100%',
+              },
+            },
+          ],
+        },
+      ],
+    }
+    const markup: MarkupNode[] = []
 
     if (primer) {
       markup.push(
@@ -40,7 +84,7 @@ export namespace AngularShape {
     return markup
   }
 
-  AngularShape.config<Properties>({
+  AngularShape.config({
     view: 'angular-shape-view',
     markup: getMarkup(),
     attrs: {
@@ -53,6 +97,8 @@ export namespace AngularShape {
       fo: {
         refWidth: '100%',
         refHeight: '100%',
+        width: '100%',
+        height: '100%',
       },
     },
     propHooks(metadata: Properties) {
@@ -61,7 +107,7 @@ export namespace AngularShape {
         if (primer) {
           metadata.markup = getMarkup(primer)
 
-          let attrs = {}
+          let attrs: Record<string, string> = {}
           switch (primer) {
             case 'circle':
               attrs = {
@@ -91,7 +137,7 @@ export namespace AngularShape {
               },
             },
             metadata.attrs || {},
-          )
+          ) as Attributes
         }
       }
       return metadata

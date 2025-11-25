@@ -1,18 +1,38 @@
 import React from 'react'
 import { Graph, Node } from '@antv/x6'
+import { ReactShape } from './node'
 
-export type ReactShapeConfig = Node.Properties & {
+export interface ReactShapeComponentProps {
+  node: Node
+  graph: Graph
+}
+
+export type ReactShapeComponent =
+  | React.ComponentType<ReactShapeComponentProps>
+  | React.ReactElement
+
+export type EffectKeys = ReadonlyArray<string>
+
+export interface ReactNodeOptions {
+  width?: number
+  height?: number
+  primer?: ReactShape.Primer
+  attrs?: ReactShape.Attributes
+}
+
+export interface ReactShapeConfig extends ReactNodeOptions {
   shape: string
-  component: React.ComponentType<{ node: Node; graph: Graph }>
-  effect?: (keyof Node.Properties)[]
+  component: ReactShapeComponent
+  effect?: EffectKeys
   inherit?: string
+  [key: string]: unknown
 }
 
 export const shapeMaps: Record<
   string,
   {
-    component: React.ComponentType<{ node: Node; graph: Graph }>
-    effect?: (keyof Node.Properties)[]
+    component: ReactShapeComponent
+    effect?: EffectKeys
   }
 > = {}
 
@@ -30,7 +50,7 @@ export function register(config: ReactShapeConfig) {
     shape,
     {
       inherit: inherit || 'react-shape',
-      ...others,
+      ...(others as ReactNodeOptions),
     },
     true,
   )

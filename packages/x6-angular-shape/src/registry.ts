@@ -1,12 +1,23 @@
 import { Injector, TemplateRef, Type } from '@angular/core'
-import { Graph, Node } from '@antv/x6'
+import { Graph } from '@antv/x6'
+import { AngularShape } from './node'
 
-export type Content = TemplateRef<any> | Type<any>
+export type Content = TemplateRef<unknown> | Type<unknown>
 
-export type AngularShapeConfig = Node.Properties & {
+export interface AngularNodeOptions {
+  width?: number
+  height?: number
+  primer?: AngularShape.Primer
+  attrs?: AngularShape.Attributes
+  markup?: AngularShape.MarkupNode[]
+}
+
+export interface AngularShapeConfig extends AngularNodeOptions {
   shape: string
   injector: Injector
   content: Content
+  inherit?: string
+  [key: string]: unknown
 }
 
 export const registerInfo: Map<
@@ -18,14 +29,14 @@ export const registerInfo: Map<
 > = new Map()
 
 export function register(config: AngularShapeConfig) {
-  const { shape, injector, content, ...others } = config
+  const { shape, injector, content, inherit, ...others } = config
   registerInfo.set(shape, { injector, content })
 
   Graph.registerNode(
     shape,
     {
-      inherit: 'angular-shape',
-      ...others,
+      inherit: inherit || 'angular-shape',
+      ...(others as AngularNodeOptions),
     },
     true,
   )

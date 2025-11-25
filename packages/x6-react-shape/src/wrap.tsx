@@ -11,12 +11,13 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
 
   componentDidMount() {
     const { node } = this.props
-    node.on('change:*', ({ key }) => {
+    node.on('change:*', ({ key }: { key?: string | number | symbol }) => {
       // eslint-disable-next-line react/no-access-state-in-setstate
       const content = shapeMaps[node.shape]
       if (content) {
         const { effect } = content
-        if (!effect || effect.includes(key)) {
+        const k = String(key)
+        if (!effect || effect.includes(k)) {
           this.setState({ tick: this.state.tick + 1 })
         }
       }

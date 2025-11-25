@@ -1,15 +1,32 @@
 import { Graph, Node } from '@antv/x6'
+import { VueShape } from './node'
 
-export type VueShapeConfig = Node.Properties & {
+export interface VueShapeComponentProps {
+  node: Node
+  graph: Graph
+}
+
+export type VueShapeComponent = unknown
+
+export interface VueNodeOptions {
+  width?: number
+  height?: number
+  primer?: VueShape.Primer
+  attrs?: VueShape.Attributes
+  markup?: VueShape.MarkupNode[]
+}
+
+export interface VueShapeConfig extends VueNodeOptions {
   shape: string
-  component: any
+  component: VueShapeComponent
   inherit?: string
+  [key: string]: unknown
 }
 
 export const shapeMaps: Record<
   string,
   {
-    component: any
+    component: VueShapeComponent
   }
 > = {}
 
@@ -26,7 +43,7 @@ export function register(config: VueShapeConfig) {
     shape,
     {
       inherit: inherit || 'vue-shape',
-      ...others,
+      ...(others as VueNodeOptions),
     },
     true,
   )

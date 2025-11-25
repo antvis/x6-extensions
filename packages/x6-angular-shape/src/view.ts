@@ -20,22 +20,28 @@ export class AngularShapeView extends NodeView<AngularShape> {
     )
   }
 
-  private getNgArguments(): Record<string, any> {
-    const input = (this.cell.data?.ngArguments as Record<string, any>) || {}
-    return input
+  private getNgArguments(): Record<string, unknown> {
+    const raw = (this.cell.getData?.() ?? this.cell.data) as unknown
+    if (raw && typeof raw === 'object') {
+      const data = raw as { ngArguments?: Record<string, unknown> }
+      return data.ngArguments || {}
+    }
+    return {}
   }
 
   /** 当执行 node.setData() 时需要对实例设置新的输入值 */
   private setInstanceInput(
     content: Content,
-    ref: EmbeddedViewRef<any> | ComponentRef<any>,
+    ref: EmbeddedViewRef<unknown> | ComponentRef<unknown>,
   ): void {
     const ngArguments = this.getNgArguments()
     if (content instanceof TemplateRef) {
-      const embeddedViewRef = ref as EmbeddedViewRef<any>
+      const embeddedViewRef = ref as EmbeddedViewRef<{
+        ngArguments: Record<string, unknown>
+      }>
       embeddedViewRef.context = { ngArguments }
     } else {
-      const componentRef = ref as ComponentRef<any>
+      const componentRef = ref as ComponentRef<unknown>
       Object.keys(ngArguments).forEach((v) =>
         componentRef.setInput(v, ngArguments[v]),
       )
@@ -64,7 +70,7 @@ export class AngularShapeView extends NodeView<AngularShape> {
         const componentRef = viewContainerRef.createComponent(content, {
           injector,
         })
-        const insertNode = (componentRef.hostView as EmbeddedViewRef<any>)
+        const insertNode = (componentRef.hostView as EmbeddedViewRef<unknown>)
           .rootNodes[0] as HTMLElement
         container.appendChild(insertNode)
         this.setInstanceInput(content, componentRef)

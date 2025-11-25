@@ -21,6 +21,7 @@
     "antv"
   ],
   "scripts": {
+    "start": "vite",
     "build": "run-s clean build:esm build:cjs build:umd",
     "clean": "rimraf dist es lib",
     "build:esm": "tsc --module esnext --target es6 --outDir ./es",
@@ -28,12 +29,14 @@
     "build:umd": "pnpm run --if-present && rollup -c rollup.config.js"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x",
-    "@angular/core": ">= 14"
+    "@angular/core": ">= 14",
+    "@antv/x6": ">=2 <4"
   },
   "devDependencies": {
-    "@antv/x6": "^2.x",
-    "@angular/core": ">= 14"
+    "@angular/core": ">= 14",
+    "@antv/x6": "^3.0.1",
+    "vite": "^7.2.4",
+    "less": "^4.2.0"
   },
   "author": {
     "name": "Eve-Sama",

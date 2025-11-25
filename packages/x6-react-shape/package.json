@@ -29,18 +29,18 @@
     "build:umd": "pnpm run --if-present && rollup -c rollup.config.js"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": ">=2 <4",
     "react": ">=18.0.0",
     "react-dom": ">= 18.0.0"
   },
   "devDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": "^3.0.1",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
+    "@vitejs/plugin-react": "^5.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "vite": "^7.1.2",
-    "@vitejs/plugin-react": "^5.0.2"
+    "vite": "^7.1.2"
   },
   "author": {
     "name": "bubkoo",
