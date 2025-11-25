@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-angular-shape",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "X6 shape for rendering angular components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -28,11 +28,11 @@
     "build:umd": "pnpm run --if-present && rollup -c rollup.config.js"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": "^2.x || ^3.0.1",
     "@angular/core": ">= 14"
   },
   "devDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": "^3.0.1",
     "@angular/core": ">= 14"
   },
   "author": {

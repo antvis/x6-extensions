@@ -1,6 +1,6 @@
 {
   "name": "@antv/x6-vue-shape",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "X6 shape for rendering vue components.",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -31,7 +31,7 @@
     "vue-demi": "latest"
   },
   "peerDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": "^2.x || ^3.0.1",
     "@vue/composition-api": "^1.0.0-rc.1",
     "vue": "^2.0.0 || >=3.0.0"
   },
@@ -41,7 +41,7 @@
     }
   },
   "devDependencies": {
-    "@antv/x6": "^2.x",
+    "@antv/x6": "^3.0.1",
     "vue": "^3.0.0"
   },
   "author": {
