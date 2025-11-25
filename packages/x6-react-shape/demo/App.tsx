@@ -1,9 +1,9 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
+import { Graph, Node } from '@antv/x6'
 import { register } from '../src'
 import './index.less'
 
-const NodeComponent: React.FC<{ node: any; graph: Graph }> = () => (
+const NodeComponent: React.FC<{ node: Node; graph: Graph }> = () => (
   <div className="react-node">
     <div className="react-node-header">React Node</div>
   </div>

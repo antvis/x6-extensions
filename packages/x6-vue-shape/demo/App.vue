@@ -14,7 +14,7 @@ const container = ref<HTMLDivElement | null>(null)
 
 const NodeComponent = {
   name: 'VueNodeComponent',
-  props: ['node', 'graph'],
+  props: { node: Object, graph: Object },
   render() {
     return h(
       'div',
