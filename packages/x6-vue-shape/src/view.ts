@@ -1,10 +1,10 @@
-import { NodeView, Dom } from '@antv/x6'
+import { NodeView, Dom, Node } from '@antv/x6'
 import { isVue2, isVue3, createApp, h, Vue2 } from 'vue-demi'
-import { VueShape } from './node'
 import { shapeMaps } from './registry'
 import { isActive, connect, disconnect } from './teleport'
 
-export class VueShapeView extends NodeView<VueShape> {
+export class VueShapeView extends NodeView<Node> {
+  static action = 'vue' as any
   private vm: any
 
   getComponentContainer() {
@@ -114,15 +114,11 @@ export class VueShapeView extends NodeView<VueShape> {
   }
 }
 
-export namespace VueShapeView {
-  export const action = 'vue' as any
+VueShapeView.config({
+  bootstrap: [VueShapeView.action],
+  actions: {
+    component: VueShapeView.action,
+  },
+})
 
-  VueShapeView.config({
-    bootstrap: [action],
-    actions: {
-      component: action,
-    },
-  })
-
-  NodeView.registry.register('vue-shape-view', VueShapeView, true)
-}
+NodeView.registry.register('vue-shape-view', VueShapeView, true)

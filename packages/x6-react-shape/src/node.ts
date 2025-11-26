@@ -1,46 +1,38 @@
-import { ObjectExt, Markup, Node } from '@antv/x6'
+import { ObjectExt, Graph, Node, Markup } from '@antv/x6'
 
-export class ReactShape<
-  Properties extends ReactShape.Properties = ReactShape.Properties,
-> extends Node<Properties> {}
+export type Primer =
+  | 'rect'
+  | 'circle'
+  | 'path'
+  | 'ellipse'
+  | 'polygon'
+  | 'polyline'
 
-export namespace ReactShape {
-  export type Primer =
-    | 'rect'
-    | 'circle'
-    | 'path'
-    | 'ellipse'
-    | 'polygon'
-    | 'polyline'
-
-  export interface Properties extends Node.Properties {
-    primer?: Primer
-  }
+export interface Properties {
+  primer?: Primer
+  markup?: any
+  attrs?: any
 }
 
-export namespace ReactShape {
-  function getMarkup(primer?: Primer) {
-    const markup: Markup.JSONMarkup[] = []
-    const content = Markup.getForeignObjectMarkup()
+function getMarkup(primer?: Primer) {
+  const content = Markup.getForeignObjectMarkup()
 
-    if (primer) {
-      markup.push(
-        ...[
-          {
-            tagName: primer,
-            selector: 'body',
-          },
-          content,
-        ],
-      )
-    } else {
-      markup.push(content)
-    }
-
-    return markup
+  if (primer) {
+    return [
+      {
+        tagName: primer,
+        selector: 'body',
+      },
+      content,
+    ]
   }
 
-  ReactShape.config<Properties>({
+  return [content]
+}
+
+Graph.registerNode(
+  'react-shape',
+  {
     view: 'react-shape-view',
     markup: getMarkup(),
     attrs: {
@@ -56,12 +48,12 @@ export namespace ReactShape {
       },
     },
     propHooks(metadata: Properties) {
-      if (metadata.markup == null) {
+      if ((metadata as any).markup == null) {
         const primer = metadata.primer
         if (primer) {
-          metadata.markup = getMarkup(primer)
+          ;(metadata as any).markup = getMarkup(primer)
 
-          let attrs = {}
+          let attrs: any = {}
           switch (primer) {
             case 'circle':
               attrs = {
@@ -81,7 +73,7 @@ export namespace ReactShape {
             default:
               break
           }
-          metadata.attrs = ObjectExt.merge(
+          ;(metadata as any).attrs = ObjectExt.merge(
             {},
             {
               body: {
@@ -90,13 +82,14 @@ export namespace ReactShape {
                 ...attrs,
               },
             },
-            metadata.attrs || {},
+            (metadata as any).attrs || {},
           )
         }
       }
       return metadata
     },
-  })
+  },
+  true,
+)
 
-  Node.registry.register('react-shape', ReactShape, true)
-}
+export type ReactShape = Node

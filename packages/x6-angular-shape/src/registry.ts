@@ -1,13 +1,13 @@
 import { Injector, TemplateRef, Type } from '@angular/core'
-import { Graph, Node } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
 export type Content = TemplateRef<any> | Type<any>
 
-export type AngularShapeConfig = Node.Properties & {
+export type AngularShapeConfig = {
   shape: string
   injector: Injector
   content: Content
-}
+} & Record<string, any>
 
 export const registerInfo: Map<
   string,

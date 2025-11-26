@@ -1,12 +1,16 @@
 import React, { ReactPortal } from 'react'
 import { createPortal } from 'react-dom'
 import { createRoot, Root } from 'react-dom/client'
-import { Dom, NodeView } from '@antv/x6'
-import { ReactShape } from './node'
-import { Portal } from './portal'
+import { Dom, NodeView, Node } from '@antv/x6'
+import {
+  isActive as portalIsActive,
+  connect as portalConnect,
+  disconnect as portalDisconnect,
+} from './portal'
 import { Wrap } from './wrap'
 
-export class ReactShapeView extends NodeView<ReactShape> {
+export class ReactShapeView extends NodeView<Node> {
+  static action = 'react' as any
   root?: Root
 
   protected targetId() {
@@ -31,9 +35,9 @@ export class ReactShapeView extends NodeView<ReactShape> {
 
     if (container) {
       const elem = React.createElement(Wrap, { node, graph: this.graph })
-      if (Portal.isActive()) {
+      if (portalIsActive()) {
         const portal = createPortal(elem, container, node.id) as ReactPortal
-        Portal.connect(this.targetId(), portal)
+        portalConnect(this.targetId(), portal)
       } else {
         this.root = createRoot(container)
         this.root.render(elem)
@@ -74,8 +78,8 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 
   unmount() {
-    if (Portal.isActive()) {
-      Portal.disconnect(this.targetId())
+    if (portalIsActive()) {
+      portalDisconnect(this.targetId())
     }
     this.unmountReactComponent()
     super.unmount()
@@ -83,15 +87,11 @@ export class ReactShapeView extends NodeView<ReactShape> {
   }
 }
 
-export namespace ReactShapeView {
-  export const action = 'react' as any
+ReactShapeView.config({
+  bootstrap: [ReactShapeView.action],
+  actions: {
+    component: ReactShapeView.action,
+  },
+})
 
-  ReactShapeView.config({
-    bootstrap: [action],
-    actions: {
-      component: action,
-    },
-  })
-
-  NodeView.registry.register('react-shape-view', ReactShapeView, true)
-}
+NodeView.registry.register('react-shape-view', ReactShapeView, true)
