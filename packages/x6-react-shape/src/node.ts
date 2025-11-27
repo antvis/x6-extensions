@@ -1,4 +1,4 @@
-import { ObjectExt, Graph, Node, Markup } from '@antv/x6'
+import { ObjectExt, Graph, Node, Markup, NodeProperties } from '@antv/x6'
 
 export type Primer =
   | 'rect'
@@ -8,10 +8,8 @@ export type Primer =
   | 'polygon'
   | 'polyline'
 
-export interface Properties {
+export interface Properties extends NodeProperties {
   primer?: Primer
-  markup?: any
-  attrs?: any
 }
 
 function getMarkup(primer?: Primer) {
@@ -48,10 +46,10 @@ Graph.registerNode(
       },
     },
     propHooks(metadata: Properties) {
-      if ((metadata as any).markup == null) {
+      if (metadata.markup == null) {
         const primer = metadata.primer
         if (primer) {
-          ;(metadata as any).markup = getMarkup(primer)
+          metadata.markup = getMarkup(primer)
 
           let attrs: any = {}
           switch (primer) {
@@ -73,7 +71,7 @@ Graph.registerNode(
             default:
               break
           }
-          ;(metadata as any).attrs = ObjectExt.merge(
+          metadata.attrs = ObjectExt.merge(
             {},
             {
               body: {
@@ -82,7 +80,7 @@ Graph.registerNode(
                 ...attrs,
               },
             },
-            (metadata as any).attrs || {},
+            metadata.attrs || {},
           )
         }
       }
