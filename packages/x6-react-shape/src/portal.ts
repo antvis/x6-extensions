@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useLayoutEffect } from 'react'
 
 let active = false
 let dispatch: React.Dispatch<Action>
@@ -15,22 +15,19 @@ export interface Payload {
 
 const reducer = (state: Payload[], action: Action) => {
   const payload = action.payload as Payload
+  const index = state.findIndex((item) => item.id === payload.id)
   switch (action.type) {
     case 'add': {
-      const index = state.findIndex((item) => item.id === payload.id)
       if (index >= 0) {
         return [...state.slice(0, index), payload, ...state.slice(index + 1)]
       }
       return [...state, payload]
     }
     case 'remove': {
-      const index = state.findIndex((item) => item.id === payload.id)
       if (index >= 0) {
-        const result = [...state]
-        result.splice(index, 1)
-        return result
+        return [...state.slice(0, index), ...state.slice(index + 1)]
       }
-      break
+      return state
     }
     default: {
       break
@@ -57,9 +54,15 @@ export function isActive() {
 
 export function getProvider() {
   const PortalProvider: React.FC = () => {
-    active = true
     const [items, mutate] = useReducer(reducer, [])
-    dispatch = mutate
+    useLayoutEffect(() => {
+      active = true
+      dispatch = mutate
+      return () => {
+        active = false
+        dispatch = (() => {}) as React.Dispatch<Action>
+      }
+    }, [mutate])
     return React.createElement(
       React.Fragment,
       null,

@@ -8,7 +8,7 @@ import {
   History,
   Transform,
 } from '@antv/x6'
-import { register } from '../src'
+import { register, getProvider } from '../src'
 import './index.less'
 
 const NodeComponent = () => {
@@ -28,6 +28,7 @@ register({
 
 export default class Example extends React.Component {
   private container: HTMLDivElement
+  private Provider = getProvider()
 
   componentDidMount() {
     const graph = new Graph({
@@ -123,6 +124,7 @@ export default class Example extends React.Component {
   render() {
     return (
       <div className="react-basic-app">
+        <this.Provider />
         <div className="app-content" ref={this.refContainer} />
       </div>
     )
