@@ -1,10 +1,10 @@
-import { Graph, Node } from '@antv/x6'
+import { Graph } from '@antv/x6'
 
-export type VueShapeConfig = Node.Properties & {
+export type VueShapeConfig = {
   shape: string
   component: any
   inherit?: string
-}
+} & Record<string, any>
 
 export const shapeMaps: Record<
   string,

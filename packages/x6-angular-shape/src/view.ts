@@ -4,11 +4,11 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core'
-import { Dom, NodeView } from '@antv/x6'
-import { AngularShape } from './node'
+import { Dom, NodeView, Node } from '@antv/x6'
 import { Content, registerInfo } from './registry'
 
-export class AngularShapeView extends NodeView<AngularShape> {
+export class AngularShapeView extends NodeView<Node> {
+  static action = 'angular' as any
   getNodeContainer(): HTMLDivElement {
     return this.selectors && (this.selectors.foContent as HTMLDivElement)
   }
@@ -113,15 +113,11 @@ export class AngularShapeView extends NodeView<AngularShape> {
   }
 }
 
-export namespace AngularShapeView {
-  export const action = 'angular' as any
+AngularShapeView.config({
+  bootstrap: [AngularShapeView.action],
+  actions: {
+    component: AngularShapeView.action,
+  },
+})
 
-  AngularShapeView.config({
-    bootstrap: [action],
-    actions: {
-      component: action,
-    },
-  })
-
-  NodeView.registry.register('angular-shape-view', AngularShapeView, true)
-}
+NodeView.registry.register('angular-shape-view', AngularShapeView, true)

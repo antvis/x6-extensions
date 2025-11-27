@@ -1,46 +1,36 @@
-import { Node, Markup, ObjectExt } from '@antv/x6'
+import { ObjectExt, Graph, Node, Markup, NodeProperties } from '@antv/x6'
 
-export class AngularShape<
-  Properties extends AngularShape.Properties = AngularShape.Properties,
-> extends Node<Properties> {}
+export type Primer =
+  | 'rect'
+  | 'circle'
+  | 'path'
+  | 'ellipse'
+  | 'polygon'
+  | 'polyline'
 
-export namespace AngularShape {
-  export type Primer =
-    | 'rect'
-    | 'circle'
-    | 'path'
-    | 'ellipse'
-    | 'polygon'
-    | 'polyline'
-
-  export interface Properties extends Node.Properties {
-    primer?: Primer
-  }
+export interface Properties extends NodeProperties {
+  primer?: Primer
 }
 
-export namespace AngularShape {
-  function getMarkup(primer?: Primer) {
-    const markup: Markup.JSONMarkup[] = []
-    const content = Markup.getForeignObjectMarkup()
+function getMarkup(primer?: Primer) {
+  const content = Markup.getForeignObjectMarkup()
 
-    if (primer) {
-      markup.push(
-        ...[
-          {
-            tagName: primer,
-            selector: 'body',
-          },
-          content,
-        ],
-      )
-    } else {
-      markup.push(content)
-    }
-
-    return markup
+  if (primer) {
+    return [
+      {
+        tagName: primer,
+        selector: 'body',
+      },
+      content,
+    ]
   }
 
-  AngularShape.config<Properties>({
+  return [content]
+}
+
+Graph.registerNode(
+  'angular-shape',
+  {
     view: 'angular-shape-view',
     markup: getMarkup(),
     attrs: {
@@ -61,7 +51,7 @@ export namespace AngularShape {
         if (primer) {
           metadata.markup = getMarkup(primer)
 
-          let attrs = {}
+          let attrs: any = {}
           switch (primer) {
             case 'circle':
               attrs = {
@@ -96,7 +86,8 @@ export namespace AngularShape {
       }
       return metadata
     },
-  })
+  },
+  true,
+)
 
-  Node.registry.register('angular-shape', AngularShape, true)
-}
+export type AngularShape = Node

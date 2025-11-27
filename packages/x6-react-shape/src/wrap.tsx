@@ -1,10 +1,9 @@
 import React from 'react'
-import { Graph } from '@antv/x6'
-import { ReactShape } from './node'
+import { Graph, Node } from '@antv/x6'
 import { shapeMaps } from './registry'
 
-export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
-  constructor(props: Wrap.Props) {
+export class Wrap extends React.PureComponent<WrapProps, WrapState> {
+  constructor(props: WrapProps) {
     super(props)
     this.state = { tick: 0 }
   }
@@ -16,7 +15,8 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
       const content = shapeMaps[node.shape]
       if (content) {
         const { effect } = content
-        if (!effect || effect.includes(key)) {
+        const k = String(key)
+        if (!effect || effect.includes(k)) {
           this.setState({ tick: this.state.tick + 1 })
         }
       }
@@ -48,13 +48,11 @@ export class Wrap extends React.PureComponent<Wrap.Props, Wrap.State> {
   }
 }
 
-export namespace Wrap {
-  export interface State {
-    tick: number
-  }
+export interface WrapState {
+  tick: number
+}
 
-  export interface Props {
-    node: ReactShape
-    graph: Graph
-  }
+export interface WrapProps {
+  node: Node
+  graph: Graph
 }

@@ -1,18 +1,18 @@
 import React from 'react'
 import { Graph, Node } from '@antv/x6'
 
-export type ReactShapeConfig = Node.Properties & {
+export type ReactShapeConfig = {
   shape: string
   component: React.ComponentType<{ node: Node; graph: Graph }>
-  effect?: (keyof Node.Properties)[]
+  effect?: string[]
   inherit?: string
-}
+} & Record<string, any>
 
 export const shapeMaps: Record<
   string,
   {
     component: React.ComponentType<{ node: Node; graph: Graph }>
-    effect?: (keyof Node.Properties)[]
+    effect?: string[]
   }
 > = {}
 
