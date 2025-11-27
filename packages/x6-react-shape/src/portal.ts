@@ -19,8 +19,7 @@ const reducer = (state: Payload[], action: Action) => {
     case 'add': {
       const index = state.findIndex((item) => item.id === payload.id)
       if (index >= 0) {
-        state[index] = payload
-        return [...state]
+        return [...state.slice(0, index), payload, ...state.slice(index + 1)]
       }
       return [...state, payload]
     }
@@ -57,7 +56,7 @@ export function isActive() {
 }
 
 export function getProvider() {
-  function PortalProvider() {
+  const PortalProvider: React.FC = () => {
     active = true
     const [items, mutate] = useReducer(reducer, [])
     dispatch = mutate
