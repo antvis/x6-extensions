@@ -1,4 +1,7 @@
 {
   "extends": "../../tsconfig.json",
-  "exclude": ["node_modules", "lib", "es", "demo"]
+  "include": ["src"],
+  "compilerOptions": {
+    "types": ["vite/client"]
+  }
 }
